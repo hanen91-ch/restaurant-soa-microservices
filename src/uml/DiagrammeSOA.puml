@@ -1,0 +1,41 @@
+@startuml architecture-soa
+title Architecture SOA - Restaurant
+
+package "client" #LightBlue {
+  component "ClientSOA" as clientSOA
+}
+
+package "soa" #LightYellow {
+  component "BusService" as bus
+}
+
+package "service" #LightGreen {
+  component "ServiceClient" as svcClient
+  component "ServiceMenu" as svcMenu
+  component "ServiceCommande" as svcCommande
+}
+
+package "domain" #Lavender {
+  component "Client" as domClient
+  component "Plat" as domPlat
+  component "Commande" as domCommande
+  component "StatutCommande" as domStatut
+}
+
+' Relations SOA
+clientSOA --> bus : appelle
+
+bus --> svcClient : utilise
+bus --> svcMenu : utilise
+bus --> svcCommande : utilise
+
+svcClient --> domClient : gère
+svcMenu --> domPlat : gère
+svcCommande --> domCommande : gère
+
+' Relations internes du domaine
+domCommande --> domStatut : possède
+domCommande --> domClient : référence
+domCommande --> domPlat : référence
+
+@enduml

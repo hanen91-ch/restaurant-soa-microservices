@@ -1,0 +1,46 @@
+@startuml architecture-microservices
+
+title Architecture Microservices - Restaurant
+
+package "client" #LightBlue {
+  component "ClientMicroservices" as clientMicro
+}
+
+package "server" #LightYellow {
+  component "ClientHttpServer\n:5001" as srvClient
+  component "MenuHttpServer\n:5002" as srvMenu
+  component "CommandeHttpServer\n:5003" as srvCommande
+}
+
+package "service" #LightGreen {
+  component "ServiceClient" as svcClient
+  component "ServiceMenu" as svcMenu
+  component "ServiceCommande" as svcCommande
+}
+
+package "domain" #Lavender {
+  component "Client" as domClient
+  component "Plat" as domPlat
+  component "Commande" as domCommande
+  component "StatutCommande" as domStatut
+}
+
+clientMicro --> srvClient : HTTP GET
+clientMicro --> srvMenu : HTTP GET
+clientMicro --> srvCommande : HTTP GET
+
+' Chaque serveur utilise son propre service
+srvClient --> svcClient : utilise
+srvMenu --> svcMenu : utilise
+srvCommande --> svcCommande : utilise
+
+svcClient --> domClient : gère
+svcMenu --> domPlat : gère
+svcCommande --> domCommande : gère
+
+' Relations internes du domaine
+domCommande --> domStatut : possède
+domCommande --> domClient : référence
+domCommande --> domPlat : référence
+
+@enduml
